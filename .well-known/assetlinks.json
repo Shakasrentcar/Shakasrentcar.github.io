@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.shakasrentcar.app",
+        "sha256_cert_fingerprints": ["1B:67:B4:9C:5C:31:D0:AA:B0:29:A6:77:E2:2F:4C:02:F7:F2:3D:03:A4:2A:CD:64:AA:E6:0E:E0:FE:C1:E7:9E"]
+      }
+    }]
