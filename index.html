@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHAKAS RENT CAR - ASISTEN MEDAN</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#0f0f0f;color:#fff;padding:12px;padding-bottom:90px}
+.topbar{background:gold;color:#000;text-align:center;padding:8px 10px;font-weight:900;font-size:12px;border-radius:10px;margin-bottom:10px;letter-spacing:0.2px}
+.header{border:2px solid #d4af37;border-radius:16px;padding:14px;text-align:center;background:#181818}
+.header h1{color:#d4af37;font-weight:900}
+.badge{background:#d4af37;color:#000;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800;display:inline-block;margin-top:6px}
+.toggle{display:flex;background:#1e1e1e;border-radius:10px;padding:4px;margin:12px 0;gap:4px}
+.toggle button{flex:1;padding:10px;border:none;border-radius:8px;font-weight:800;cursor:pointer;background:transparent;color:#888}
+.toggle button.active{background:#d4af37;color:#000}
+.list{background:#1e1e1e;border-radius:12px;overflow:hidden}
+.row{display:flex;justify-content:space-between;align-items:center;padding:13px 14px;border-bottom:1px solid #2a2a2a;font-size:13px;cursor:pointer}
+.row b{color:#d4af37}
+.box{background:#1e1e1e;border:2px solid #d4af37;border-radius:12px;padding:14px;margin-top:12px;color:#fff}
+.box input{width:100%;padding:12px;border:1px solid #d4af37;background:#0f0f0f;color:#fff;border-radius:8px;margin-top:6px;font-size:16px}
+.btn{width:100%;padding:13px;border:none;border-radius:10px;font-weight:900;margin-top:8px;cursor:pointer}
+.btn-gold{background:#d4af37}.btn-green{background:#25D366;color:#fff}
+#chatBtn{position:fixed;bottom:20px;right:15px;width:60px;height:60px;background:#d4af37;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;cursor:pointer;z-index:999;box-shadow:0 4px 12px rgba(0,0,0,.5)}
+#chatBox{position:fixed;bottom:90px;right:10px;width:92%;max-width:380px;background:#fff;border-radius:16px;overflow:hidden;display:none;flex-direction:column;z-index:999;box-shadow:0 8px 20px rgba(0,0,0,.6)}
+#chatHead{background:#d4af37;color:#000;padding:12px;font-weight:900;text-align:center}
+#chatMsgs{height:340px;overflow-y:auto;padding:10px;background:#f5f5f5;color:#000;font-size:13px;line-height:1.5}
+.msg{margin:6px 0;padding:9px 11px;border-radius:12px;max-width:88%;white-space:pre-line;word-wrap:break-word}
+.me{background:#d4af37;color:#000;margin-left:auto}
+.bot{background:#fff;border:1px solid #ddd}
+#chatInput{display:flex;border-top:1px solid #ddd}
+#chatInput input{flex:1;padding:12px;border:none;outline:none}
+#chatInput button{background:#d4af37;border:none;padding:12px 16px;font-weight:900;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+📅 <span id="tgl">Loading...</span> | 🕒 <span id="jam">00:00:00</span> WIB Medan | 🟢 ADMIN SHAKAS 24 JAM ONLINE
+</div>
+
+<div class="header">
+<h1>SHAKAS RENT CAR</h1>
+<p style="font-size:11px">Jalan Restu Gg Napit No 12 Medan</p>
+<div class="badge">HARGA BERSAHABAT, TIDAK BIKIN RUNGKAD!</div>
+</div>
+
+<div class="toggle">
+<button id="btnDriver" class="active" onclick="setMode('driver')">+DRIVER</button>
+<button id="btnLepas" onclick="setMode('lepas')">LEPAS KUNCI</button>
+</div>
+
+<div class="list" id="carList"></div>
+
+<div class="box">
+<b>Lama Sewa (Hari):</b>
+<input id="hari" type="number" value="1">
+<button class="btn btn-gold" onclick="hitung()">Hitung Total</button>
+<div id="total" style="text-align:center;margin-top:10px;font-weight:900;color:#d4af37"></div>
+<button class="btn btn-green" onclick="wa()">Booking WA</button>
+</div>
+
+<div id="chatBtn" onclick="openChat()">💬</div>
+<div id="chatBox">
+<div id="chatHead">ADMIN SHAKAS - VINEL 😊<span style="float:right;cursor:pointer" onclick="closeChat()">X</span></div>
+<div id="chatMsgs"><div class="msg bot">Halo Kak! Selamat datang di Shakas Rent Car. Aku Vinel siap bantu 24 jam. Mau tanya harga, syarat, kuliner halal / non halal, atau tempat nongkrong?</div></div>
+<div id="chatInput"><input id="q" placeholder="Ketik di sini Kak..."><button onclick="send()">Kirim</button></div>
+</div>
+
+<script>
+const data=[
+{name:"🚘 Avanza",driver:600,lepas:400},
+{name:"🚘 Innova Reborn",driver:800,lepas:600},
+{name:"🚘 Zenix Hybrid ⚡ LARIS",driver:1200,lepas:1000},
+{name:"🚘 Pajero Sport",driver:1200,lepas:1000},
+{name:"🚘 Fortuner Legender 👑",driver:1200,lepas:1000},
+{name:"🚘 Fortuner 2.8 GR",driver:1200,lepas:1000},
+{name:"🚘 Hiace Commuter",driver:1200,lepas:1000},
+{name:"🚘 Hiace Premio",driver:1300,lepas:1100},
+{name:"🚘 Hiace VVIP 💎 SULTAN",driver:2300,lepas:2000},
+];
+let mode='driver';let selected=data[0];
+
+function render(){
+  let h='';
+  data.forEach((c,i)=>{
+    let harga=mode==='driver'?c.driver:c.lepas;
+    let isSel = selected.name === c.name? 'style="background:#2a2a2a;border-left:4px solid #d4af37"' : '';
+    h+=`<div class="row" ${isSel} onclick="pilih(${i})"><span><b>${c.name}</b><br><small style="color:#aaa">${mode==='driver'?'+Driver':'+Lepas Kunci'}</small></span><span><b>Rp ${harga}K</b></span></div>`
+  });
+  document.getElementById('carList').innerHTML=h
+}
+
+function setMode(m){mode=m;document.getElementById('btnDriver').className=m==='driver'?'active':'';document.getElementById('btnLepas').className=m==='lepas'?'active':'';render();hitung()}
+function pilih(i){selected=data[i];render();hitung()}
+function hitung(){let h=document.getElementById('hari').value||1;let harga=mode==='driver'?selected.driver:selected.lepas;let total=h*harga;document.getElementById('total').innerHTML=selected.name+' '+h+' Hari<br>Rp '+harga+'K x '+h+' = Rp '+total+'K'}
+function wa(){let h=document.getElementById('hari').value||1;let harga=mode==='driver'?selected.driver:selected.lepas;let t=`Halo Admin SHAKAS, mau sewa ${selected.name} ${mode} ${h} hari. Harga Rp ${harga}K/hari.`;window.open('https://wa.me/6281361481778?text='+encodeURIComponent(t),'_blank')}
+function openChat(){document.getElementById('chatBox').style.display='flex'}
+function closeChat(){document.getElementById('chatBox').style.display='none'}
+
+// JAM LIVE 
+function updateJam(){
+  let now=new Date();
+  document.getElementById('jam').innerText=now.toLocaleTimeString('id-ID');
+  document.getElementById('tgl').innerText=now.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+}
+setInterval(updateJam,1000);updateJam();
+let lastTopic = "";
+const pantunList = [
+`Jalan-jalan ke Danau Toba,\nSinggah dulu beli durian Ucok,\nKalau Kakak lagi jomblo merana,\nSewa Avanza Shakas aja, jalan sama Vinel yuk 😍`,
+`Pergi ke Berastagi naik Hiace,\nBeli jagung manis di pinggir jalan,\nKalau hati Kakak lagi galau,\nVinel siap nemenin sampai pagi menjelang 😆`,
+`Ke Samosir lihat ulos Batak,\nMakan mie gomak pakai andaliman,\nKalau Kakak bilang boleh Vinel pun sesak,\nSenengnya Kakak mau lanjut pantun lagi kan? 🤭`,
+`Naik Fortuner ke Kualanamu,\nJemput pacar yang baru landing,\nKalau Kakak jawab boleh gitu,\nVinel jadi berbunga-bunga rasanya malding 😍`
+];
+
+function isYesStrict(low){
+  low = low.trim();
+  const exact = ["boleh","boleh dong","boleh lah","mau","mau dong","gas","gaskeun","gaskan","lanjut","ok","oke","ya","iya","yuk","boleh yuk","mau lagi","lagi","boleh lagi"];
+  if(exact.includes(low)) return true;
+  if(low.length <= 12 && (low==="ya"||low==="ok"||low==="gas"||low==="yuk"||low==="iya")) return true;
+  return false;
+}
+
+function getSmartReply(q){
+ let low = q.toLowerCase().trim();
+
+ // 1. SAPAAN - harus pendek
+ if(low.length <= 12 && (low.includes("hai")||low.includes("halo")||low.includes("hi")||low.includes("woi")||low.includes("oy")||low.includes("pagi")||low.includes("siang")||low.includes("malam"))){
+   lastTopic="sapa";
+   return `Halo Kak! Selamat datang di Shakas Rent Car 🙏😊\n\nAku Vinel siap bantu 24 jam.\n\nMau tanya:\n- Harga +driver / lepas kunci\n- Syarat lepas kunci\n- Wisata & healing Medan\n- Kuliner halal & non-halal\n- Pantun\n\nMau dibantu apa Kak?`;
+ }
+
+ // 2. SYARAT & HARGA - CEK DULUAN! JANGAN KENA YA!
+ if(low.includes("syarat")||low.includes("lepas kunci")||low.includes("harga")||low.includes("berapa")||low.includes("avanza")||low.includes("innova")||low.includes("fortuner")||low.includes("pajero")||low.includes("zenix")||low.includes("hiace")||low.includes("sewa")||low.includes("rental")){
+   lastTopic="harga";
+   return `Baik Kak, syarat lepas kunci di Shakas:\n1. KTP & KK Asli\n2. Motor + STNK jaminan (atau deposit)\n3. Minimal 2 hari luar kota\n4. Bensin Full to Full\n\nHARGA DRIVER: Avanza 600K, Reborn 800K, Zenix/Pajero/Fortuner 1200K, Premio 1300K, VVIP 2300K\nLEPAS KUNCI: Avanza 400K, Reborn 600K, Zenix/Fortuner 1000K, Premio 1100K, VVIP 2000K\n\nMau booking kapan Kak? Tinggal klik tombol warna hijau •BOOKING WA• 🙏`;
+ }
+
+ // 3. GALAU / SAYANG / CINTA - CEK DULUAN!
+ if(low.includes("sayang")||low.includes("cinta")||low.includes("kangen")||low.includes("rindu")||low.includes("bucin")||low.includes("galau")||low.includes("sedih")||low.includes("putus")||low.includes("curhat")||low.includes("doi")){
+   lastTopic="galau";
+   return `Wah Kak, lagi bucin / galau ya? Gapapa Kak, peluk jauh dulu dari Vinel ya 🤗 Kakak tetap berharga kok! Healing tipis-tipis ke Berastagi atau Danau Toba bagus lho Kak, biar fresh lagi. Kalau butuh teman cerita, Vinel siap dengerin kapan aja Kak 🙏`;
+ }
+
+ // 4. PANTUN
+ if(low.includes("pantun")||low.includes("gombal")){
+   lastTopic="pantun";
+   let p = pantunList[Math.floor(Math.random()*pantunList.length)];
+   return `${p}\n\nGimana Kak pantun nya? Mau pantun lagi Kak? 😆`;
+ }
+
+ // 5. FIX BOLEH - HANYA JIKA BENER-BENER BOLEH TOK!
+ if(isYesStrict(low) && lastTopic === "pantun"){
+   let p = pantunList[Math.floor(Math.random()*pantunList.length)];
+   return `${p}\n\nGimana Kak? Mau pantun lagi Kak? 😆`;
+ }
+
+ if(isYesStrict(low)){
+   lastTopic="yes";
+   return `Siap Kak! Gas keun 😆🙏\n\nMau Vinel bantu apa? Cek harga, wisata, atau pantun lagi Kak?`;
+ }
+
+ // 6. LAINNYA
+ if(low.includes("healing")||low.includes("wisata")||low.includes("liburan")){
+   lastTopic="wisata";
+   return `Tempat healing terbaik: Danau Toba, Pantai Bali Lestari, Sipiso-piso, Berastagi, The Hill Sibolangit.\n\nPakai Hiace 1.2JT + driver muat 15 orang Kak 🙏`;
+ }
+ if(low.includes("non halal")||low.includes("b2")||low.includes("bpk")||low.includes("lapo")){
+   return `Non-halal enak: BPK Tesalonika Jl Semarang (legend!), BPK Pak Sabar, Lapo Marpadotbe.\n\nRame-rame pakai Hiace 1.2JT + driver Kak 🙏`;
+ }
+ if(low.includes("halal")||low.includes("kuliner")||low.includes("makan")){
+   return `Kuliner HALAL: Wajir Seafood (100% HALAL!), RM Garuda, Nasi Goreng Pemuda, Mie Aceh Titi Bobrok, Ucok Durian.\n\nDiantar Avanza 600K + driver Kak 🙏`;
+ }
+ if(low.includes("cari cewe")||low.includes("cari pacar")||low.includes("cari jodoh")){
+   return `Ihhh Kakak bisa aja 😆 Vinel kan udah di sini nemenin 24 jam 🤭\n\nCoba jalan ke Merdeka Walk pakai Avanza kami Kak, banyak yang cantik nongkrong disana 🙏😍`;
+ }
+ if(low.includes("skripsi")||low.includes("kuliah")||low.includes("dosen")){
+   return `Pejuang skripsi semangat ya Kak! 🤗🎓 Doain cepat ACC! Healing ke Berastagi / Danau Toba biar fresh lagi. Avanza 600K + driver aja Kak 🙏`;
+ }
+ if(low.includes("nongkrong")||low.includes("bar")||low.includes("cafe")||low.includes("ngopi")){
+   return `Nongkrong hits: The Edge Cambridge, Beer Garden Abdullah Lubis, Healy Mac's Centre Point.\n\nKalau capek, WA Shakas jemput driver 24 jam ya Kak 🙏`;
+ }
+
+ return `Oalah Kak, Vinel kurang paham dikit 😅 Coba tanya: "harga avanza berapa?", "syarat lepas kunci", "aku lagi galau", "minta pantun dong" 🙏`;
+}
+function send(){
+let input = document.getElementById('q');
+let q = input.value.trim();if(!q) return;
+let box=document.getElementById('chatMsgs');
+box.innerHTML+=`<div class="msg me">${q}</div>`;
+let ans = getSmartReply(q);
+setTimeout(()=>{box.innerHTML+=`<div class="msg bot">${ans}</div>`;box.scrollTop=box.scrollHeight},300);
+input.value='';box.scrollTop=box.scrollHeight;
+}
+render();hitung();
+</script>
+</body>
+</html>
