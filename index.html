@@ -99,32 +99,50 @@ const pantunList = [
 ];
 function isYesStrict(low){low=low.trim();const exact=["boleh","boleh dong","mau","gas","gaskeun","lanjut","ok","oke","ya","iya","yuk"];if(exact.includes(low)) return true;return false;}
 function getSmartReply(q){
- let low = q.toLowerCase().trim();
- if(low.length <= 12 && (low.includes("hai")||low.includes("halo")||low.includes("hi"))){
-   lastTopic="sapa";
-   return `Halo Kak! Selamat datang di Shakas Rent Car 🙏😊\nKami KHUSUS +DRIVER ya Kak (Tidak Lepas Kunci).\n\nMau tanya harga +driver, wisata, kuliner, pantun?`;
- }
- if(low.includes("lepas kunci")||low.includes("lepas")||low.includes("syarat")){
-   lastTopic="harga";
-   return `Mohon maaf Kak, Shakas Rent Car sekarang HANYA melayani +DRIVER ONLY, tidak melayani lepas kunci ya Kak 🙏\nDemi keamanan & kenyamanan, supir kami profesional hafal jalan Medan.\n\nHARGA +DRIVER: Avanza 600K, Reborn 800K, Venturer 900k, Zenix/Pajero/Fortuner 1200K, Premio 1300K, VVIP 2300K\n\nMau booking kapan Kak? Klik BOOKING WA hijau 🙏`;
- }
- if(low.includes("harga")||low.includes("berapa")||low.includes("avanza")||low.includes("innova")||low.includes("fortuner")||low.includes("sewa")){
-   lastTopic="harga";
-   return `Siap Kak! HARGA KHUSUS +DRIVER:\nAvanza 600K, Reborn 800K, Venturer 900k, Zenix/Pajero/Fortuner 1200K, Premio 1300K, VVIP 2300K (sudah driver+BBM)\n\nMau berapa hari Kak?`;
- }
- if(low.includes("pantun")||low.includes("gombal")){
-   lastTopic="pantun";
-   let p = pantunList[Math.floor(Math.random()*pantunList.length)];
-   return `${p}\n\nGimana Kak? Mau pantun lagi? 😆`;
- }
- if(isYesStrict(low) && lastTopic === "pantun"){
-   let p = pantunList[Math.floor(Math.random()*pantunList.length)];
-   return `${p}\n\nMau lagi Kak? 😆`;
- }
- if(low.includes("sayang")||low.includes("galau")||low.includes("cinta")){
-   return `Wah lagi galau ya Kak? Peluk jauh dari Vinel 🤗 Healing ke Berastagi / Danau Toba yuk pakai Avanza 600K +driver 🙏`;
- }
- return `Halo Kak Vinel siap bantu 🙏 Tanya: "harga avanza", "lepas kunci", "pantun", "wisata"`;
+  let low = q.toLowerCase().trim();
+  if(low.length <= 12 && (low.includes("hai") || low.includes("halo") || low.includes("hi"))){
+    lastTopic="sapa";
+    return `Halo Kak! Selamat datang di Shakas 🙏 Mau cari mobil +Driver, healing, atau kuliner?`;
+  }
+  // HEALING
+  if(low.includes("healing") || low.includes("wisata") || low.includes("liburan") || low.includes("pantai") || low.includes("danau") || low.includes("tangkahan")){
+    lastTopic="healing";
+    return `Healing Medan gaskeun Kak! 😎\n\n🏖️ Pantai Bali Lestari\n🏔️ Berastagi - Gundaling\n🛶 Danau Toba Parapat\n🐘 Tangkahan mandi gajah\n\nMau pake Avanza 600K +Driver siap antar!`;
+  }
+  // NON HALAL - INI YANG KAU TANYA TOT
+  if((low.includes("makan") && low.includes("non halal")) || low.includes("bpk") || low.includes("lapo") || low.includes("b2") || low.includes("babi")){
+    lastTopic="kuliner";
+    return `NON HALAL legend Medan Kak 🐷:\n\n1. BPK Tesalonika - Medan Baru (paling legend)\n2. BPK Haleluya - Medan Baru murah 14K\n3. Dapur Batak Roma - Petisah\n4. RM Olakisat - Selayang kidu-kidu\n5. Lapo Nazolo - Sate Babi & Burger B2\n6. Kesawan Square atribut MERAH = non halal\n\nSupir Shakas tau semua Kak!`;
+  }
+  // HALAL
+  if((low.includes("makan") && low.includes("halal"))){
+    lastTopic="kuliner";
+    return `Kuliner HALAL Medan 🤤:\n\n1. Nasi Padang Waspada\n2. Soto Kesawan\n3. Mie Aceh Titi Bobrok\n4. Ucok Durian\n5. Lemang Lubuk Pakam`;
+  }
+  if(low.includes("makan") || low.includes("kuliner")){
+    return `Mau kuliner HALAL atau NON HALAL Kak? 😋\nKetik 'makan halal' atau 'makan non halal / BPK'`;
+  }
+  if(low.includes("lepas kunci")){
+    lastTopic="harga";
+    return `Mohon maaf Kak, Shakas sekarang khusus +DRIVER ONLY ya 🙏 Biar Kakak duduk manis aja!`;
+  }
+  if(low.includes("harga") || low.includes("avanza") || low.includes("innova") || low.includes("zenix") || low.includes("fortuner") || low.includes("pajero") || low.includes("hiace")){
+    lastTopic="harga";
+    return `LIST +DRIVER ONLY:\nAvanza 600K\nReborn 800K\nVenturer 900K\nZenix/Fortuner/Pajero 1200K\nHiace 1300K`;
+  }
+  if(low.includes("pantun")){
+    lastTopic="pantun";
+    let p = pantunList[Math.floor(Math.random()*pantunList.length)];
+    return `${p}\n\nGimana Kak? Mau pantun lagi? 😁`;
+  }
+  if(isYesStrict(low) && lastTopic === "pantun"){
+    let p = pantunList[Math.floor(Math.random()*pantunList.length)];
+    return `${p}\n\nMau lagi Kak? 😁`;
+  }
+  if(low.includes("sayang")){
+    return `Wah lagi galau ya Kak? Peluk jauh dari Vinel 🤗`;
+  }
+  return `Halo Kak Vinel siap bantu 🙏 Tanya aja 'healing', 'makan halal', 'makan non halal', 'harga' ya!`;
 }
 function send(){
 let input = document.getElementById('q');
