@@ -110,17 +110,17 @@ function getSmartReply(q){
     return `Healing Medan gaskeun Kak! 😎\n\n🏖️ Pantai Bali Lestari\n🏔️ Berastagi - Gundaling\n🛶 Danau Toba Parapat\n🐘 Tangkahan mandi gajah\n\nMau pake Avanza 600K +Driver siap antar!`;
   }
   // NON HALAL - INI YANG KAU TANYA TOT
-  if((low.includes("makan") && low.includes("non halal")) || low.includes("bpk") || low.includes("lapo") || low.includes("b2") || low.includes("babi")){
+    if(low.includes("non halal") || low.includes("nonhalal") || low.includes("bpk") || low.includes("lapo") || low.includes("b2") || low.includes("babi")){
     lastTopic="kuliner";
     return `NON HALAL legend Medan Kak 🐷:\n\n1. BPK Tesalonika - Medan Baru (paling legend)\n2. BPK Haleluya - Medan Baru murah 14K\n3. Dapur Batak Roma - Petisah\n4. RM Olakisat - Selayang kidu-kidu\n5. Lapo Nazolo - Sate Babi & Burger B2\n6. Kesawan Square atribut MERAH = non halal\n\nSupir Shakas tau semua Kak!`;
   }
-  // HALAL
-  if((low.includes("makan") && low.includes("halal"))){
+  // HALAL - UPDATE LEGEND MEDAN
+  if(low.includes("halal") || low.includes("seafood") || low.includes("wajir") || low.includes("padang") || low.includes("durian")){
     lastTopic="kuliner";
-    return `Kuliner HALAL Medan 🤤:\n\n1. Nasi Padang Waspada\n2. Soto Kesawan\n3. Mie Aceh Titi Bobrok\n4. Ucok Durian\n5. Lemang Lubuk Pakam`;
+    return `Kuliner HALAL legend Medan Kak 🤤:\n\n🍛 NASI PADANG:\n1. Nasi Padang Waspada - paling rame di Medan\n2. Garuda - Polonia\n3. Sederhana\n\n🍜 MIE & SOTO:\n4. Mie Aceh Titi Bobrok\n5. Soto Kesawan - legend sejak 1930\n6. Mie Balap - Krakatau\n\n🦐 SEAFOOD HALAL:\n7. Wajir Seafood - Jl. Kol Sugiono (HALAL! Kepiting, Udang Galah)\n8. Rajawali Seafood - Jl. Rajawali\n9. Nikmat Laut - Ringroad\n\n🍦 JAJAN:\n10. Ucok Durian - Jl. Wahid Hasyim\n11. Lemang Lubuk Pakam\n12. Tip Top - Kesawan\n\nSupir Shakas tau semua alamatnya Kak, tinggal gaskeun!`;
   }
   if(low.includes("makan") || low.includes("kuliner")){
-    return `Mau kuliner HALAL atau NON HALAL Kak? 😋\nKetik 'makan halal' atau 'makan non halal / BPK'`;
+    return `Mau kuliner HALAL atau NON HALAL Kak? 😋\nKetik 'halal / seafood' atau 'non halal / BPK'`;
   }
   if(low.includes("lepas kunci")){
     lastTopic="harga";
